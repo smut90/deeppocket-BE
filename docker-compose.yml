@@ -1,0 +1,36 @@
+#version: '2'
+#
+#services:
+#  deeppocket:
+#    build: .
+#    environment:
+#      POCKET_DB_ENDPOINT: ${POCKET_DB_ENDPOINT}
+#      POCKET_DB_NAME: ${POCKET_DB_NAME}
+#      POCKET_DB_USERNAME: ${POCKET_DB_USERNAME}
+#      POCKET_DB_PASSWORD: ${POCKET_DB_PASSWORD}
+
+version: '3'
+
+services:
+  postgres:
+    image: postgres:9.6.1
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: 'postgres'
+      POSTGRES_PASSWORD: 'password'
+      POSTGRES_DB: 'pocket'
+  api:
+      build:
+        context: .
+        dockerfile: Dockerfile
+      ports:
+        - "8080:8080"
+      depends_on:
+        - postgres
+      environment:
+        POCKET_DB_ENDPOINT: 'postgres:5432'
+        POCKET_DB_NAME: 'pocket'
+        POCKET_DB_USERNAME: 'postgres'
+        POCKET_DB_PASSWORD: 'password'
+
